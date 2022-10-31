@@ -53,25 +53,16 @@ def main():
 
     # TODO: Create TabularDataset using TabularDatasetFactory
     # Data is located at:
-    # "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
+    datastore_path = "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
 
-    from azureml.core import Workspace, Dataset
-
-    subscription_id = '6971f5ac-8af1-446e-8034-05acea24681f'
-    resource_group = 'aml-quickstarts-213801'
-    workspace_name = 'quick-starts-ws-213801'
-
-    workspace = Workspace(subscription_id, resource_group, workspace_name)
-
-    dataset = Dataset.get_by_name(workspace, name='project_data')
-    ds = dataset.to_pandas_dataframe()
+    ds = TabularDatasetFactory.from_delimited_files(path=datastore_path)
     
     x, y = clean_data(ds)
 
     # TODO: Split data into train and test sets.
 
     ### YOUR CODE HERE ###a
-    x_train, x_test, y_train, y_test = train_test_split(x,y,test_size = 0.25,random = 76)
+    x_train, x_test, y_train, y_test = train_test_split(x,y,test_size = 0.25,random_state = 76)
 
     model = LogisticRegression(C=args.C, max_iter=args.max_iter).fit(x_train, y_train)
 
