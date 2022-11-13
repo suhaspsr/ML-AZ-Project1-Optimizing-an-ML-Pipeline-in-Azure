@@ -21,7 +21,7 @@ The AutoML VotingEnsemble method has slightly better accuracy at 91.75% compared
 **Explain the pipeline architecture, including data, hyperparameter tuning, and classification algorithm.**
 There are three important steps in designing for hyperparameter tunning. 
 
-###Sampling Methods:
+### Sampling Methods:
 
 Sampling methods for parameters of the model. We can to do random sampling, grid search or use Bayesian sampling. Choose the parameters which you want to tune for depending on the model. For each parameter provide the search space depending on continuous or discreate values.
 
@@ -31,13 +31,13 @@ parameter = { "--C" : choice(0.001,0.01, 0.1, 1, 10, 100, 200, 1000), "--max_ite
 ```
 We are using RandomParameterSampling because its simpler and computation cost is small compared to other methods.
 
-###Early Stopping Policy:
+### Early Stopping Policy:
 
 We need to use a stopping criterion for sampling methods to automatically terminate poorly performing jobs to be computationally efficient.
 
 We are using BanditPolicy as our stopping criteria with evaluation interval at 2 and slack factor equals 0.1. The slack will compare the current run with the best performed run to be in a minimum threshold and determines whether to terminate or not.
 
-###Performance Metric:
+### Performance Metric:
 
 We need to provide a performance metric to the configuration to be maximized or minimized. We are using accuracy as our metric here and tune the parameters to get the best accuracy.
 
@@ -66,4 +66,4 @@ As a Data Scientist, its important to do exploratory analysis on the data. There
 I want to use different parameter sampler method such as Grid Search or Bayesian sampling and different parameters to fine tune. Based on the EDA and objective I want explore different algorithms and metrics to maximize or minimize. 
 
 ## Proof of cluster clean up
-
+![Cluster Clean Up](img1.jpg)
