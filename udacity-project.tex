@@ -1,0 +1,1520 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Notebook}
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{core} \PY{k+kn}{import} \PY{n}{Workspace}\PY{p}{,} \PY{n}{Experiment}
+
+\PY{n}{ws} \PY{o}{=} \PY{n}{Workspace}\PY{o}{.}\PY{n}{from\PYZus{}config}\PY{p}{(}\PY{p}{)}
+\PY{n}{exp} \PY{o}{=} \PY{n}{Experiment}\PY{p}{(}\PY{n}{workspace}\PY{o}{=}\PY{n}{ws}\PY{p}{,} \PY{n}{name}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{udacity\PYZhy{}project}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Workspace name: }\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n}{ws}\PY{o}{.}\PY{n}{name}\PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Azure region: }\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n}{ws}\PY{o}{.}\PY{n}{location}\PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Subscription id: }\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n}{ws}\PY{o}{.}\PY{n}{subscription\PYZus{}id}\PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Resource group: }\PY{l+s+s1}{\PYZsq{}} \PY{o}{+} \PY{n}{ws}\PY{o}{.}\PY{n}{resource\PYZus{}group}\PY{p}{,} \PY{n}{sep} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{run} \PY{o}{=} \PY{n}{exp}\PY{o}{.}\PY{n}{start\PYZus{}logging}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+To sign in, use a web browser to open the page https://microsoft.com/devicelogin
+and enter the code E9W9DZ2WS to authenticate.
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{core}\PY{n+nn}{.}\PY{n+nn}{compute} \PY{k+kn}{import} \PY{n}{ComputeTarget}\PY{p}{,} \PY{n}{AmlCompute}
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{core}\PY{n+nn}{.}\PY{n+nn}{compute\PYZus{}target} \PY{k+kn}{import} \PY{n}{ComputeTargetException}
+
+\PY{n}{cluster\PYZus{}name} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{ml\PYZhy{}project\PYZhy{}opt1}\PY{l+s+s2}{\PYZdq{}}
+
+\PY{c+c1}{\PYZsh{} TODO: Create compute cluster}
+\PY{c+c1}{\PYZsh{} Use vm\PYZus{}size = \PYZdq{}Standard\PYZus{}D2\PYZus{}V2\PYZdq{} in your provisioning configuration.}
+\PY{c+c1}{\PYZsh{} max\PYZus{}nodes should be no greater than 4.}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}\PYZsh{}}
+\PY{k}{try}\PY{p}{:}
+    \PY{n}{compute\PYZus{}target} \PY{o}{=} \PY{n}{ComputeTarget}\PY{p}{(}\PY{n}{workspace}\PY{o}{=}\PY{n}{ws}\PY{p}{,} \PY{n}{name} \PY{o}{=} \PY{n}{cluster\PYZus{}name}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Found existing cluster}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{k}{except} \PY{n}{ComputeTargetException}\PY{p}{:}
+    \PY{n}{compute\PYZus{}config} \PY{o}{=} \PY{n}{AmlCompute}\PY{o}{.}\PY{n}{provisioning\PYZus{}configuration}\PY{p}{(}\PY{n}{vm\PYZus{}size}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{STANDARD\PYZus{}D2\PYZus{}V2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{n}{max\PYZus{}nodes}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{)}
+    \PY{n}{compute\PYZus{}target} \PY{o}{=} \PY{n}{ComputeTarget}\PY{o}{.}\PY{n}{create}\PY{p}{(}\PY{n}{ws}\PY{p}{,}\PY{n}{cluster\PYZus{}name}\PY{p}{,}\PY{n}{compute\PYZus{}config}\PY{p}{)}
+\PY{n}{compute\PYZus{}target}\PY{o}{.}\PY{n}{wait\PYZus{}for\PYZus{}completion}\PY{p}{(}\PY{n}{show\PYZus{}output} \PY{o}{=} \PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+InProgress{\ldots}
+SucceededProvisioning operation finished, operation "Succeeded"
+Succeeded
+AmlCompute wait for completion finished
+
+Minimum number of nodes requested have been provisioned
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{widgets} \PY{k+kn}{import} \PY{n}{RunDetails}
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{train}\PY{n+nn}{.}\PY{n+nn}{sklearn} \PY{k+kn}{import} \PY{n}{SKLearn}
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{train}\PY{n+nn}{.}\PY{n+nn}{hyperdrive}\PY{n+nn}{.}\PY{n+nn}{run} \PY{k+kn}{import} \PY{n}{PrimaryMetricGoal}
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{train}\PY{n+nn}{.}\PY{n+nn}{hyperdrive}\PY{n+nn}{.}\PY{n+nn}{policy} \PY{k+kn}{import} \PY{n}{BanditPolicy}
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{train}\PY{n+nn}{.}\PY{n+nn}{hyperdrive}\PY{n+nn}{.}\PY{n+nn}{sampling} \PY{k+kn}{import} \PY{n}{RandomParameterSampling}
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{train}\PY{n+nn}{.}\PY{n+nn}{hyperdrive}\PY{n+nn}{.}\PY{n+nn}{runconfig} \PY{k+kn}{import} \PY{n}{HyperDriveConfig}
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{train}\PY{n+nn}{.}\PY{n+nn}{hyperdrive}\PY{n+nn}{.}\PY{n+nn}{parameter\PYZus{}expressions} \PY{k+kn}{import} \PY{n}{choice}\PY{p}{,} \PY{n}{uniform}
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{core} \PY{k+kn}{import} \PY{n}{Environment}\PY{p}{,} \PY{n}{ScriptRunConfig}
+\PY{k+kn}{import} \PY{n+nn}{os}
+
+\PY{c+c1}{\PYZsh{} Specify parameter sampler}
+\PY{n}{parameter} \PY{o}{=} \PY{p}{\PYZob{}} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}\PYZhy{}C}\PY{l+s+s2}{\PYZdq{}} \PY{p}{:} \PY{n}{choice}\PY{p}{(}\PY{l+m+mf}{0.001}\PY{p}{,}\PY{l+m+mf}{0.01}\PY{p}{,} \PY{l+m+mf}{0.1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{,} \PY{l+m+mi}{200}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{)}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZhy{}\PYZhy{}max\PYZus{}iter}\PY{l+s+s2}{\PYZdq{}} \PY{p}{:} \PY{n}{choice}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{,} \PY{l+m+mi}{200}\PY{p}{,} \PY{l+m+mi}{500}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{)} \PY{p}{\PYZcb{}}
+\PY{n}{ps} \PY{o}{=} \PY{n}{RandomParameterSampling}\PY{p}{(}\PY{n}{parameter}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Specify a Policy}
+\PY{n}{policy} \PY{o}{=} \PY{n}{BanditPolicy}\PY{p}{(}\PY{n}{evaluation\PYZus{}interval}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,}\PY{n}{slack\PYZus{}factor}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{)}
+
+\PY{k}{if} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{training}\PY{l+s+s2}{\PYZdq{}} \PY{o+ow}{not} \PY{o+ow}{in} \PY{n}{os}\PY{o}{.}\PY{n}{listdir}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+    \PY{n}{os}\PY{o}{.}\PY{n}{mkdir}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{./training}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Setup environment for your training run}
+\PY{n}{sklearn\PYZus{}env} \PY{o}{=} \PY{n}{Environment}\PY{o}{.}\PY{n}{from\PYZus{}conda\PYZus{}specification}\PY{p}{(}\PY{n}{name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sklearn\PYZhy{}env}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{file\PYZus{}path}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{conda\PYZus{}dependencies.yml}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Create a ScriptRunConfig Object to specify the configuration details of your training job}
+\PY{n}{src} \PY{o}{=} \PY{n}{ScriptRunConfig}\PY{p}{(}\PY{n}{source\PYZus{}directory}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                            \PY{n}{script}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{train.py}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                            \PY{c+c1}{\PYZsh{} arguments=[\PYZsq{}\PYZhy{}\PYZhy{}arg1\PYZsq{}, parameter[\PYZsq{}\PYZhy{}\PYZhy{}C\PYZsq{}], \PYZsq{}\PYZhy{}\PYZhy{}arg2\PYZsq{}, parameter[\PYZsq{}\PYZhy{}\PYZhy{}max\PYZus{}iter\PYZsq{}]],}
+                            \PY{n}{compute\PYZus{}target}\PY{o}{=}\PY{n}{cluster\PYZus{}name}\PY{p}{,}
+                            \PY{n}{environment}\PY{o}{=}\PY{n}{sklearn\PYZus{}env}\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Create a HyperDriveConfig using the src object, hyperparameter sampler, and policy.}
+\PY{n}{hyperdrive\PYZus{}config} \PY{o}{=} \PY{n}{HyperDriveConfig}\PY{p}{(}\PY{n}{run\PYZus{}config}\PY{o}{=}\PY{n}{src}\PY{p}{,}
+                             \PY{n}{hyperparameter\PYZus{}sampling}\PY{o}{=}\PY{n}{ps}\PY{p}{,}
+                             \PY{n}{policy}\PY{o}{=}\PY{n}{policy}\PY{p}{,}
+                             \PY{n}{primary\PYZus{}metric\PYZus{}name}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Accuracy}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+                             \PY{n}{primary\PYZus{}metric\PYZus{}goal}\PY{o}{=}\PY{n}{PrimaryMetricGoal}\PY{o}{.}\PY{n}{MAXIMIZE}\PY{p}{,}
+                             \PY{n}{max\PYZus{}total\PYZus{}runs}\PY{o}{=}\PY{l+m+mi}{40}\PY{p}{,}
+                             \PY{n}{max\PYZus{}concurrent\PYZus{}runs}\PY{o}{=}\PY{l+m+mi}{4}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Submit your hyperdrive run to the experiment and show run details with the widget.}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}\PYZsh{}}
+\PY{n}{hyperdrive\PYZus{}run} \PY{o}{=} \PY{n}{exp}\PY{o}{.}\PY{n}{submit}\PY{p}{(}\PY{n}{hyperdrive\PYZus{}config}\PY{p}{)}
+
+\PY{n}{RunDetails}\PY{p}{(}\PY{n}{hyperdrive\PYZus{}run}\PY{p}{)}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\PY{n}{hyperdrive\PYZus{}run}\PY{o}{.}\PY{n}{wait\PYZus{}for\PYZus{}completion}\PY{p}{(}\PY{n}{show\PYZus{}output}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+\_HyperDriveWidget(widget\_settings=\{'childWidgetDisplay': 'popup', 'send\_telemetry': False, 'log\_level': 'INFO'…
+    \end{Verbatim}
+
+    
+    
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{joblib}
+\PY{c+c1}{\PYZsh{} Get your best run and save the model from that run.}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}\PYZsh{}}
+\PY{n}{best} \PY{o}{=} \PY{n}{hyperdrive\PYZus{}run}\PY{o}{.}\PY{n}{get\PYZus{}best\PYZus{}run\PYZus{}by\PYZus{}primary\PYZus{}metric}\PY{p}{(}\PY{p}{)}
+\PY{n}{best}\PY{o}{.}\PY{n}{get\PYZus{}details}\PY{p}{(}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{hyperdrive\PYZus{}run}\PY{o}{.}\PY{n}{get\PYZus{}hyperparameters}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{Best Metrics and parameters}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{best}\PY{o}{.}\PY{n}{get\PYZus{}metrics}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+\{'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_0': '\{"--C": 0.001, "--max\_iter":
+10\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_1': '\{"--C": 0.1, "--max\_iter":
+100\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_2': '\{"--C": 0.001, "--
+max\_iter": 500\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_3': '\{"--C": 0.001, "
+--max\_iter": 100\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_4': '\{"--C": 100, "
+--max\_iter": 200\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_5': '\{"--C": 0.001,
+"--max\_iter": 1000\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_6': '\{"--C":
+1000, "--max\_iter": 100\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_7': '\{"--C":
+1000, "--max\_iter": 50\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_8': '\{"--C":
+0.1, "--max\_iter": 10\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_9': '\{"--C":
+100, "--max\_iter": 500\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_10': '\{"--C":
+200, "--max\_iter": 10\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_11': '\{"--C":
+0.01, "--max\_iter": 10\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_12': '\{"--C":
+200, "--max\_iter": 500\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_13': '\{"--C":
+200, "--max\_iter": 1000\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_14': '\{"--
+C": 10, "--max\_iter": 500\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_15': '\{"--
+C": 0.1, "--max\_iter": 50\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_16': '\{"--
+C": 1000, "--max\_iter": 1000\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_17':
+'\{"--C": 0.001, "--max\_iter": 200\}',
+'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_18': '\{"--C": 0.01, "--max\_iter": 50\}',
+'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_19': '\{"--C": 100, "--max\_iter": 50\}',
+'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_20': '\{"--C": 10, "--max\_iter": 200\}',
+'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_21': '\{"--C": 0.01, "--max\_iter":
+100\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_22': '\{"--C": 200, "--max\_iter":
+100\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_23': '\{"--C": 200, "--max\_iter":
+200\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_24': '\{"--C": 0.01, "--
+max\_iter": 200\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_25': '\{"--C": 1, "--
+max\_iter": 100\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_26': '\{"--C": 1000, "
+--max\_iter": 500\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_27': '\{"--C": 0.01,
+"--max\_iter": 500\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_28': '\{"--C":
+0.01, "--max\_iter": 1000\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_29': '\{"--
+C": 1, "--max\_iter": 500\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_30': '\{"--
+C": 1, "--max\_iter": 50\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_31': '\{"--
+C": 0.1, "--max\_iter": 200\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_32': '\{"
+--C": 1, "--max\_iter": 1000\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_33': '\{"
+--C": 1000, "--max\_iter": 10\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_34':
+'\{"--C": 100, "--max\_iter": 100\}', 'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_35':
+'\{"--C": 0.001, "--max\_iter": 50\}',
+'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_36': '\{"--C": 10, "--max\_iter": 100\}',
+'HD\_3c52880f-2250-4b63-821c-c53acb7c9a36\_37': '\{"--C": 200, "--max\_iter": 50\}'\}
+
+Best Metrics and parameters
+\{'Regularization Strength:': 100.0, 'Max iterations:': 200, 'Accuracy':
+0.9121145909201263\}
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{os}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{os}\PY{o}{.}\PY{n}{getcwd}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/mnt/batch/tasks/shared/LS\_root/mounts/clusters/ml-
+project/code/Users/odl\_user\_215159
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{model} \PY{o}{=} \PY{n}{best}\PY{o}{.}\PY{n}{register\PYZus{}model}\PY{p}{(}\PY{n}{model\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{hpt\PYZus{}model}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{model\PYZus{}path}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{data}\PY{n+nn}{.}\PY{n+nn}{dataset\PYZus{}factory} \PY{k+kn}{import} \PY{n}{TabularDatasetFactory}
+
+\PY{c+c1}{\PYZsh{} Create TabularDataset using TabularDatasetFactory}
+\PY{c+c1}{\PYZsh{} Data is available at: }
+\PY{n}{url} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{https://automlsamplenotebookdata.blob.core.windows.net/automl\PYZhy{}sample\PYZhy{}notebook\PYZhy{}data/bankmarketing\PYZus{}train.csv}\PY{l+s+s2}{\PYZdq{}}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}\PYZsh{}}
+\PY{n}{ds} \PY{o}{=} \PY{n}{TabularDatasetFactory}\PY{o}{.}\PY{n}{from\PYZus{}delimited\PYZus{}files}\PY{p}{(}\PY{n}{url}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{train} \PY{k+kn}{import} \PY{n}{clean\PYZus{}data}
+
+\PY{c+c1}{\PYZsh{} Use the clean\PYZus{}data function to clean your data.}
+\PY{n}{x}\PY{p}{,} \PY{n}{y} \PY{o}{=} \PY{n}{clean\PYZus{}data}\PY{p}{(}\PY{n}{ds}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{saving-best-hyper-parameter-model}{%
+\subsubsection{Saving Best Hyper Parameter
+Model}\label{saving-best-hyper-parameter-model}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{linear\PYZus{}model} \PY{k+kn}{import} \PY{n}{LogisticRegression}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{model\PYZus{}selection} \PY{k+kn}{import} \PY{n}{train\PYZus{}test\PYZus{}split}
+
+\PY{n}{x\PYZus{}train}\PY{p}{,} \PY{n}{x\PYZus{}test}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}test} \PY{o}{=} \PY{n}{train\PYZus{}test\PYZus{}split}\PY{p}{(}\PY{n}{x}\PY{p}{,}\PY{n}{y}\PY{p}{,}\PY{n}{test\PYZus{}size} \PY{o}{=} \PY{l+m+mf}{0.25}\PY{p}{,}\PY{n}{random\PYZus{}state} \PY{o}{=} \PY{l+m+mi}{76}\PY{p}{)}
+\PY{c+c1}{\PYZsh{} best\PYZus{}parameters}
+\PY{n}{c} \PY{o}{=} \PY{l+m+mi}{100}
+\PY{n}{max\PYZus{}iter} \PY{o}{=} \PY{l+m+mi}{200}
+\PY{n}{lr\PYZus{}model} \PY{o}{=} \PY{n}{LogisticRegression}\PY{p}{(}\PY{n}{C}\PY{o}{=}\PY{n}{c}\PY{p}{,} \PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{n}{max\PYZus{}iter}\PY{p}{)}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{x\PYZus{}train}\PY{p}{,} \PY{n}{y\PYZus{}train}\PY{p}{)}
+\PY{n}{joblib}\PY{o}{.}\PY{n}{dump}\PY{p}{(}\PY{n}{lr\PYZus{}model}\PY{p}{,} \PY{n}{filename} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{best\PYZus{}hyper\PYZus{}para\PYZus{}model.sav}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+['best\_hyper\_para\_model.sav']
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{x}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   age  marital  default  housing  loan  month  day\_of\_week  duration  \textbackslash{}
+0   57        1        0        0     1      5            1       371
+1   55        1        0        1     0      5            4       285
+2   33        1        0        0     0      5            5        52
+3   36        1        0        0     0      6            5       355
+4   27        1        0        1     0      7            5       189
+
+   campaign  pdays  {\ldots}  contact\_cellular  contact\_telephone  \textbackslash{}
+0         1    999  {\ldots}                 1                  0
+1         2    999  {\ldots}                 0                  1
+2         1    999  {\ldots}                 1                  0
+3         4    999  {\ldots}                 0                  1
+4         2    999  {\ldots}                 1                  0
+
+   education\_basic.4y  education\_basic.6y  education\_basic.9y  \textbackslash{}
+0                   0                   0                   0
+1                   0                   0                   0
+2                   0                   0                   1
+3                   0                   0                   0
+4                   0                   0                   0
+
+   education\_high.school  education\_illiterate  education\_professional.course  \textbackslash{}
+0                      1                     0                              0
+1                      0                     0                              0
+2                      0                     0                              0
+3                      1                     0                              0
+4                      1                     0                              0
+
+   education\_university.degree  education\_unknown
+0                            0                  0
+1                            0                  1
+2                            0                  0
+3                            0                  0
+4                            0                  0
+
+[5 rows x 39 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{x}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                                        age   marital   default       housing  \textbackslash{}
+age                            1.000000e+00  0.269381  0.002098  3.446979e-07
+marital                        2.693811e-01  1.000000  0.007695 -7.299599e-03
+default                        2.097518e-03  0.007695  1.000000 -3.623044e-03
+housing                        3.446979e-07 -0.007300 -0.003623  1.000000e+00
+loan                          -7.735566e-03 -0.000857 -0.004037  5.369264e-02
+month                          7.943181e-02  0.013479  0.011196  3.000209e-02
+day\_of\_week                   -1.716694e-02  0.000421 -0.006630 -5.981580e-03
+duration                      -3.085231e-03 -0.005531 -0.005711 -5.064525e-03
+campaign                       7.260389e-04  0.002236 -0.004241 -1.100933e-02
+pdays                         -3.778330e-02  0.029046  0.001873 -1.061205e-02
+previous                       2.362764e-02 -0.040487  0.003047  2.131793e-02
+poutcome                       3.877544e-02 -0.027107 -0.001778  1.218868e-02
+emp.var.rate                   4.477592e-05  0.078566  0.005000 -5.696069e-02
+cons.price.idx                 1.541775e-03  0.044366 -0.003489 -7.965754e-02
+cons.conf.idx                  1.299179e-01  0.065236  0.005061 -3.281060e-02
+euribor3m                      1.129557e-02  0.087781  0.005923 -5.579704e-02
+nr.employed                   -1.791353e-02  0.080555  0.006670 -4.190320e-02
+job\_admin.                    -1.044185e-01 -0.122995 -0.005555  1.424357e-02
+job\_blue-collar               -2.667163e-02  0.128661 -0.005116 -1.459121e-02
+job\_entrepreneur               2.952776e-02  0.052566 -0.001849  5.559505e-03
+job\_housemaid                  8.597419e-02  0.047110 -0.001557 -5.208476e-03
+job\_management                 6.293427e-02  0.064346 -0.002640 -8.588960e-03
+job\_retired                    4.422458e-01  0.056874 -0.002001 -2.686704e-04
+job\_self-employed             -9.048206e-04  0.010609 -0.001806 -2.058197e-03
+job\_services                  -6.507000e-02 -0.020120 -0.003108 -8.484323e-03
+job\_student                   -1.978277e-01 -0.165884 -0.001387  2.275452e-03
+job\_technician                -6.368588e-02 -0.055911  0.012915  7.919862e-03
+job\_unemployed                -4.952295e-03  0.009111  0.019256  8.834016e-03
+job\_unknown                    4.607849e-02  0.017316 -0.000875  2.125337e-03
+contact\_cellular              -5.926072e-03 -0.062103  0.007224  8.267465e-02
+contact\_telephone              5.926072e-03  0.062103 -0.007224 -8.267465e-02
+education\_basic.4y             2.433419e-01  0.115424 -0.003201 -1.230694e-02
+education\_basic.6y             1.312426e-02  0.080411 -0.002325 -1.002018e-02
+education\_basic.9y            -3.885826e-02  0.070426 -0.003969 -7.975904e-04
+education\_high.school         -1.096283e-01 -0.071771  0.002363 -8.966003e-03
+education\_illiterate           1.982926e-02  0.014298 -0.000204  4.426179e-04
+education\_professional.course  5.200752e-03 -0.003817  0.015358  1.641196e-02
+education\_university.degree   -6.880454e-02 -0.103378 -0.006171  1.402595e-02
+education\_unknown              6.294042e-02  0.000030 -0.002007 -9.071543e-03
+
+                                   loan     month  day\_of\_week  duration  \textbackslash{}
+age                           -0.007736  0.079432    -0.017167 -0.003085
+marital                       -0.000857  0.013479     0.000421 -0.005531
+default                       -0.004037  0.011196    -0.006630 -0.005711
+housing                        0.053693  0.030002    -0.005982 -0.005065
+loan                           1.000000 -0.004832    -0.001672 -0.005312
+month                         -0.004832  1.000000    -0.007383 -0.021745
+day\_of\_week                   -0.001672 -0.007383     1.000000  0.008583
+duration                      -0.005312 -0.021745     0.008583  1.000000
+campaign                       0.004934 -0.031788     0.014436 -0.071795
+pdays                          0.000671 -0.083171     0.003347 -0.047941
+previous                      -0.002427  0.063616     0.004834  0.020621
+poutcome                      -0.003169  0.075008    -0.001525  0.044833
+emp.var.rate                   0.002841  0.060215    -0.003134 -0.028175
+cons.price.idx                -0.005212 -0.149369    -0.001316  0.004399
+cons.conf.idx                 -0.006626  0.262210    -0.000514 -0.008967
+euribor3m                      0.001909  0.165302    -0.004404 -0.032883
+nr.employed                    0.005898  0.134885    -0.000521 -0.044052
+job\_admin.                     0.018109  0.048651     0.003274 -0.008217
+job\_blue-collar               -0.004404 -0.138487     0.010033  0.012160
+job\_entrepreneur              -0.008650  0.016946    -0.003347  0.011286
+job\_housemaid                 -0.003536  0.013016    -0.012665 -0.003904
+job\_management                -0.000224  0.055531    -0.009034 -0.004876
+job\_retired                   -0.007034  0.041961     0.000392  0.012330
+job\_self-employed             -0.009283  0.013992     0.000106  0.000942
+job\_services                   0.002625 -0.059037    -0.001407  0.000368
+job\_student                    0.002060 -0.001546    -0.002250  0.017191
+job\_technician                -0.007456  0.054033     0.000014 -0.014418
+job\_unemployed                 0.001997  0.030078     0.009152 -0.006514
+job\_unknown                    0.007673 -0.011188    -0.015531 -0.006426
+contact\_cellular               0.009012  0.323680    -0.023930  0.029684
+contact\_telephone             -0.009012 -0.323680     0.023930 -0.029684
+education\_basic.4y            -0.001113 -0.033108    -0.004490  0.004123
+education\_basic.6y            -0.005657 -0.057527     0.006401  0.007366
+education\_basic.9y            -0.006863 -0.078315     0.005722  0.005662
+education\_high.school          0.000083 -0.036955    -0.005468  0.008879
+education\_illiterate           0.002866  0.005521     0.004322  0.003339
+education\_professional.course  0.000509  0.034065    -0.000884 -0.008918
+education\_university.degree    0.010740  0.126013    -0.003457 -0.013269
+education\_unknown             -0.005425 -0.012178     0.009587  0.001415
+
+                               campaign     pdays  {\ldots}  contact\_cellular  \textbackslash{}
+age                            0.000726 -0.037783  {\ldots}         -0.005926
+marital                        0.002236  0.029046  {\ldots}         -0.062103
+default                       -0.004241  0.001873  {\ldots}          0.007224
+housing                       -0.011009 -0.010612  {\ldots}          0.082675
+loan                           0.004934  0.000671  {\ldots}          0.009012
+month                         -0.031788 -0.083171  {\ldots}          0.323680
+day\_of\_week                    0.014436  0.003347  {\ldots}         -0.023930
+duration                      -0.071795 -0.047941  {\ldots}          0.029684
+campaign                       1.000000  0.053326  {\ldots}         -0.078979
+pdays                          0.053326  1.000000  {\ldots}         -0.119879
+previous                      -0.080268 -0.592436  {\ldots}          0.215433
+poutcome                      -0.050917 -0.949615  {\ldots}          0.112643
+emp.var.rate                   0.150429  0.271121  {\ldots}         -0.392534
+cons.price.idx                 0.127521  0.076908  {\ldots}         -0.590125
+cons.conf.idx                 -0.013717 -0.095193  {\ldots}         -0.255677
+euribor3m                      0.134983  0.297510  {\ldots}         -0.398692
+nr.employed                    0.143916  0.375551  {\ldots}         -0.267702
+job\_admin.                     0.015729 -0.025389  {\ldots}          0.058597
+job\_blue-collar               -0.000741  0.065499  {\ldots}         -0.095431
+job\_entrepreneur              -0.003536  0.019976  {\ldots}         -0.017008
+job\_housemaid                  0.003821 -0.001356  {\ldots}         -0.010272
+job\_management                -0.011457  0.000537  {\ldots}          0.015110
+job\_retired                   -0.010643 -0.075605  {\ldots}          0.033487
+job\_self-employed              0.005686  0.015162  {\ldots}         -0.005758
+job\_services                   0.002512  0.033374  {\ldots}         -0.032639
+job\_student                   -0.024613 -0.093208  {\ldots}          0.040956
+job\_technician                 0.000209  0.002305  {\ldots}          0.045867
+job\_unemployed                 0.000111 -0.024740  {\ldots}         -0.008272
+job\_unknown                    0.002598 -0.012054  {\ldots}         -0.026907
+contact\_cellular              -0.078979 -0.119879  {\ldots}          1.000000
+contact\_telephone              0.078979  0.119879  {\ldots}         -1.000000
+education\_basic.4y             0.001848  0.006162  {\ldots}         -0.049726
+education\_basic.6y            -0.002889  0.024775  {\ldots}         -0.046915
+education\_basic.9y            -0.003066  0.034550  {\ldots}         -0.058593
+education\_high.school          0.002306  0.008479  {\ldots}         -0.011608
+education\_illiterate          -0.002793 -0.003341  {\ldots}          0.007287
+education\_professional.course  0.002838 -0.004831  {\ldots}          0.022751
+education\_university.degree   -0.002777 -0.037990  {\ldots}          0.103725
+education\_unknown              0.002989 -0.021655  {\ldots}         -0.017979
+
+                               contact\_telephone  education\_basic.4y  \textbackslash{}
+age                                     0.005926            0.243342
+marital                                 0.062103            0.115424
+default                                -0.007224           -0.003201
+housing                                -0.082675           -0.012307
+loan                                   -0.009012           -0.001113
+month                                  -0.323680           -0.033108
+day\_of\_week                             0.023930           -0.004490
+duration                               -0.029684            0.004123
+campaign                                0.078979            0.001848
+pdays                                   0.119879            0.006162
+previous                               -0.215433           -0.020179
+poutcome                               -0.112643           -0.006024
+emp.var.rate                            0.392534            0.029533
+cons.price.idx                          0.590125            0.048761
+cons.conf.idx                           0.255677            0.022091
+euribor3m                               0.398692            0.026203
+nr.employed                             0.267702            0.014681
+job\_admin.                             -0.058597           -0.181613
+job\_blue-collar                         0.095431            0.256424
+job\_entrepreneur                        0.017008           -0.002519
+job\_housemaid                           0.010272            0.191058
+job\_management                         -0.015110           -0.059528
+job\_retired                            -0.033487            0.172665
+job\_self-employed                       0.005758           -0.017796
+job\_services                            0.032639           -0.072709
+job\_student                            -0.040956           -0.033924
+job\_technician                         -0.045867           -0.136735
+job\_unemployed                          0.008272            0.007083
+job\_unknown                             0.026907            0.022329
+contact\_cellular                       -1.000000           -0.049726
+contact\_telephone                       1.000000            0.049726
+education\_basic.4y                      0.049726            1.000000
+education\_basic.6y                      0.046915           -0.081748
+education\_basic.9y                      0.058593           -0.139537
+education\_high.school                   0.011608           -0.182943
+education\_illiterate                   -0.007287           -0.007159
+education\_professional.course          -0.022751           -0.128726
+education\_university.degree            -0.103725           -0.216950
+education\_unknown                       0.017979           -0.070561
+
+                               education\_basic.6y  education\_basic.9y  \textbackslash{}
+age                                      0.013124           -0.038858
+marital                                  0.080411            0.070426
+default                                 -0.002325           -0.003969
+housing                                 -0.010020           -0.000798
+loan                                    -0.005657           -0.006863
+month                                   -0.057527           -0.078315
+day\_of\_week                              0.006401            0.005722
+duration                                 0.007366            0.005662
+campaign                                -0.002889           -0.003066
+pdays                                    0.024775            0.034550
+previous                                -0.024665           -0.026104
+poutcome                                -0.023408           -0.031844
+emp.var.rate                             0.024740            0.022479
+cons.price.idx                           0.031420            0.035424
+cons.conf.idx                           -0.028348           -0.068509
+euribor3m                                0.023086            0.020393
+nr.employed                              0.026213            0.030713
+job\_admin.                              -0.107861           -0.160035
+job\_blue-collar                          0.231498            0.374271
+job\_entrepreneur                        -0.000617           -0.002274
+job\_housemaid                            0.014224           -0.028528
+job\_management                          -0.031488           -0.070461
+job\_retired                             -0.007753           -0.036951
+job\_self-employed                       -0.029528           -0.002410
+job\_services                            -0.000533           -0.043370
+job\_student                             -0.026160           -0.015385
+job\_technician                          -0.082229           -0.112223
+job\_unemployed                          -0.015885            0.016773
+job\_unknown                              0.002299           -0.014640
+contact\_cellular                        -0.046915           -0.058593
+contact\_telephone                        0.046915            0.058593
+education\_basic.4y                      -0.081748           -0.139537
+education\_basic.6y                       1.000000           -0.101362
+education\_basic.9y                      -0.101362            1.000000
+education\_high.school                   -0.132893           -0.226835
+education\_illiterate                    -0.005201           -0.008877
+education\_professional.course           -0.093509           -0.159610
+education\_university.degree             -0.157596           -0.269002
+education\_unknown                       -0.051256           -0.087490
+
+                               education\_high.school  education\_illiterate  \textbackslash{}
+age                                        -0.109628              0.019829
+marital                                    -0.071771              0.014298
+default                                     0.002363             -0.000204
+housing                                    -0.008966              0.000443
+loan                                        0.000083              0.002866
+month                                      -0.036955              0.005521
+day\_of\_week                                -0.005468              0.004322
+duration                                    0.008879              0.003339
+campaign                                    0.002306             -0.002793
+pdays                                       0.008479             -0.003341
+previous                                    0.013944             -0.004647
+poutcome                                   -0.009744              0.003927
+emp.var.rate                               -0.016429              0.001137
+cons.price.idx                              0.007796             -0.005399
+cons.conf.idx                              -0.057638              0.002548
+euribor3m                                  -0.020012              0.002380
+nr.employed                                -0.012501              0.004295
+job\_admin.                                  0.128616             -0.009150
+job\_blue-collar                            -0.174459              0.012475
+job\_entrepreneur                           -0.034967              0.011096
+job\_housemaid                              -0.024883              0.005473
+job\_management                             -0.085145             -0.005905
+job\_retired                                -0.037801              0.009690
+job\_self-employed                          -0.065312              0.011530
+job\_services                                0.340641             -0.006952
+job\_student                                 0.063224             -0.003103
+job\_technician                             -0.106055             -0.009475
+job\_unemployed                              0.008586             -0.003351
+job\_unknown                                -0.029395             -0.001958
+contact\_cellular                           -0.011608              0.007287
+contact\_telephone                           0.011608             -0.007287
+education\_basic.4y                         -0.182943             -0.007159
+education\_basic.6y                         -0.132893             -0.005201
+education\_basic.9y                         -0.226835             -0.008877
+education\_high.school                       1.000000             -0.011638
+education\_illiterate                       -0.011638              1.000000
+education\_professional.course              -0.209261             -0.008189
+education\_university.degree                -0.352681             -0.013802
+education\_unknown                          -0.114705             -0.004489
+
+                               education\_professional.course  \textbackslash{}
+age                                                 0.005201
+marital                                            -0.003817
+default                                             0.015358
+housing                                             0.016412
+loan                                                0.000509
+month                                               0.034065
+day\_of\_week                                        -0.000884
+duration                                           -0.008918
+campaign                                            0.002838
+pdays                                              -0.004831
+previous                                           -0.006423
+poutcome                                            0.004122
+emp.var.rate                                        0.021829
+cons.price.idx                                     -0.002715
+cons.conf.idx                                       0.031286
+euribor3m                                           0.018504
+nr.employed                                         0.014774
+job\_admin.                                         -0.164093
+job\_blue-collar                                    -0.125750
+job\_entrepreneur                                   -0.021429
+job\_housemaid                                      -0.039179
+job\_management                                     -0.081102
+job\_retired                                         0.008066
+job\_self-employed                                  -0.000156
+job\_services                                       -0.069848
+job\_student                                        -0.034754
+job\_technician                                      0.486260
+job\_unemployed                                      0.004276
+job\_unknown                                        -0.025229
+contact\_cellular                                    0.022751
+contact\_telephone                                  -0.022751
+education\_basic.4y                                 -0.128726
+education\_basic.6y                                 -0.093509
+education\_basic.9y                                 -0.159610
+education\_high.school                              -0.209261
+education\_illiterate                               -0.008189
+education\_professional.course                       1.000000
+education\_university.degree                        -0.248160
+education\_unknown                                  -0.080711
+
+                               education\_university.degree  education\_unknown
+age                                              -0.068805           0.062940
+marital                                          -0.103378           0.000030
+default                                          -0.006171          -0.002007
+housing                                           0.014026          -0.009072
+loan                                              0.010740          -0.005425
+month                                             0.126013          -0.012178
+day\_of\_week                                      -0.003457           0.009587
+duration                                         -0.013269           0.001415
+campaign                                         -0.002777           0.002989
+pdays                                            -0.037990          -0.021655
+previous                                          0.027971           0.023066
+poutcome                                          0.038127           0.018566
+emp.var.rate                                     -0.049795          -0.001391
+cons.price.idx                                   -0.095076           0.032810
+cons.conf.idx                                     0.071719           0.025607
+euribor3m                                        -0.037487          -0.005843
+nr.employed                                      -0.036704          -0.021789
+job\_admin.                                        0.324499          -0.052779
+job\_blue-collar                                  -0.335202           0.023282
+job\_entrepreneur                                  0.054220          -0.006891
+job\_housemaid                                    -0.061091           0.002673
+job\_management                                    0.249395          -0.002501
+job\_retired                                      -0.058752           0.012897
+job\_self-employed                                 0.097529          -0.020857
+job\_services                                     -0.176769          -0.008146
+job\_student                                      -0.035118           0.113349
+job\_technician                                   -0.027480          -0.026765
+job\_unemployed                                   -0.012532          -0.018283
+job\_unknown                                      -0.031530           0.164541
+contact\_cellular                                  0.103725          -0.017979
+contact\_telephone                                -0.103725           0.017979
+education\_basic.4y                               -0.216950          -0.070561
+education\_basic.6y                               -0.157596          -0.051256
+education\_basic.9y                               -0.269002          -0.087490
+education\_high.school                            -0.352681          -0.114705
+education\_illiterate                             -0.013802          -0.004489
+education\_professional.course                    -0.248160          -0.080711
+education\_university.degree                       1.000000          -0.136028
+education\_unknown                                -0.136028           1.000000
+
+[39 rows x 39 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{y}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+0    29258
+1     3692
+Name: y, dtype: int64
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{x}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+       age  marital  default  housing  loan  month  day\_of\_week  duration  \textbackslash{}
+0       57        1        0        0     1      5            1       371
+1       55        1        0        1     0      5            4       285
+2       33        1        0        0     0      5            5        52
+3       36        1        0        0     0      6            5       355
+4       27        1        0        1     0      7            5       189
+{\ldots}    {\ldots}      {\ldots}      {\ldots}      {\ldots}   {\ldots}    {\ldots}          {\ldots}       {\ldots}
+32945   56        1        0        0     1      7            1       116
+32946   37        1        0        0     1      7            5        69
+32947   26        0        0        0     0      5            2       135
+32948   31        0        0        0     0      4            1       386
+32949   39        1        0        0     0      8            4       179
+
+       campaign  pdays  {\ldots}  contact\_cellular  contact\_telephone  \textbackslash{}
+0             1    999  {\ldots}                 1                  0
+1             2    999  {\ldots}                 0                  1
+2             1    999  {\ldots}                 1                  0
+3             4    999  {\ldots}                 0                  1
+4             2    999  {\ldots}                 1                  0
+{\ldots}         {\ldots}    {\ldots}  {\ldots}               {\ldots}                {\ldots}
+32945         1    999  {\ldots}                 1                  0
+32946         7    999  {\ldots}                 1                  0
+32947         4    999  {\ldots}                 1                  0
+32948         1    999  {\ldots}                 1                  0
+32949         1    999  {\ldots}                 1                  0
+
+       education\_basic.4y  education\_basic.6y  education\_basic.9y  \textbackslash{}
+0                       0                   0                   0
+1                       0                   0                   0
+2                       0                   0                   1
+3                       0                   0                   0
+4                       0                   0                   0
+{\ldots}                   {\ldots}                 {\ldots}                 {\ldots}
+32945                   1                   0                   0
+32946                   0                   0                   0
+32947                   0                   0                   0
+32948                   0                   0                   1
+32949                   1                   0                   0
+
+       education\_high.school  education\_illiterate  \textbackslash{}
+0                          1                     0
+1                          0                     0
+2                          0                     0
+3                          1                     0
+4                          1                     0
+{\ldots}                      {\ldots}                   {\ldots}
+32945                      0                     0
+32946                      0                     0
+32947                      0                     0
+32948                      0                     0
+32949                      0                     0
+
+       education\_professional.course  education\_university.degree  \textbackslash{}
+0                                  0                            0
+1                                  0                            0
+2                                  0                            0
+3                                  0                            0
+4                                  0                            0
+{\ldots}                              {\ldots}                          {\ldots}
+32945                              0                            0
+32946                              0                            1
+32947                              0                            1
+32948                              0                            0
+32949                              0                            0
+
+       education\_unknown
+0                      0
+1                      1
+2                      0
+3                      0
+4                      0
+{\ldots}                  {\ldots}
+32945                  0
+32946                  0
+32947                  0
+32948                  0
+32949                  0
+
+[32950 rows x 39 columns]
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{automl}{%
+\subsubsection{AutoML}\label{automl}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{azureml}\PY{n+nn}{.}\PY{n+nn}{train}\PY{n+nn}{.}\PY{n+nn}{automl} \PY{k+kn}{import} \PY{n}{AutoMLConfig}
+
+\PY{c+c1}{\PYZsh{} Set parameters for AutoMLConfig}
+\PY{c+c1}{\PYZsh{} NOTE: DO NOT CHANGE THE experiment\PYZus{}timeout\PYZus{}minutes PARAMETER OR YOUR INSTANCE WILL TIME OUT.}
+\PY{c+c1}{\PYZsh{} If you wish to run the experiment longer, you will need to run this notebook in your own}
+\PY{c+c1}{\PYZsh{} Azure tenant, which will incur personal costs.}
+\PY{n}{automl\PYZus{}config} \PY{o}{=} \PY{n}{AutoMLConfig}\PY{p}{(}
+    \PY{n}{experiment\PYZus{}timeout\PYZus{}minutes}\PY{o}{=}\PY{l+m+mi}{30}\PY{p}{,}
+    \PY{n}{task}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{classification}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{primary\PYZus{}metric}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{accuracy}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{training\PYZus{}data}\PY{o}{=}\PY{n}{ds}\PY{p}{,}
+    \PY{n}{label\PYZus{}column\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+    \PY{n}{n\PYZus{}cross\PYZus{}validations}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Submit your automl run}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}\PYZsh{}}
+\PY{n}{auto\PYZus{}run} \PY{o}{=} \PY{n}{exp}\PY{o}{.}\PY{n}{submit}\PY{p}{(}\PY{n}{config}\PY{o}{=}\PY{n}{automl\PYZus{}config}\PY{p}{,} \PY{n}{show\PYZus{}output}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+No run\_configuration provided, running on local with default configuration
+Running in the active local environment.
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+<IPython.core.display.HTML object>
+    \end{Verbatim}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+Current status: DatasetEvaluation. Gathering dataset statistics.
+Current status: FeaturesGeneration. Generating features for the dataset.
+Current status: DatasetFeaturization. Beginning to fit featurizers and featurize
+the dataset.
+Current status: DatasetFeaturizationCompleted. Completed fit featurizers and
+featurizing the dataset.
+Current status: DatasetBalancing. Performing class balancing sweeping
+Current status: DatasetCrossValidationSplit. Generating individually featurized
+CV splits.
+
+********************************************************************************
+************
+DATA GUARDRAILS:
+
+TYPE:         Class balancing detection
+STATUS:       ALERTED
+DESCRIPTION:  To decrease model bias, please cancel the current run and fix
+balancing problem.
+              Learn more about imbalanced data:
+https://aka.ms/AutomatedMLImbalancedData
+DETAILS:      Imbalanced data can lead to a falsely perceived positive effect of
+a model's accuracy because the input data has bias towards one class.
++------------------------------+--------------------------------+---------------
+-----------------------+
+|Size of the smallest class    |Name/Label of the smallest class|Number of
+samples in the training data|
++==============================+================================+===============
+=======================+
+|3692                          |yes                             |32950
+|
++------------------------------+--------------------------------+---------------
+-----------------------+
+
+********************************************************************************
+************
+
+TYPE:         Missing feature values imputation
+STATUS:       PASSED
+DESCRIPTION:  No feature missing values were detected in the training data.
+              Learn more about missing value imputation:
+https://aka.ms/AutomatedMLFeaturization
+
+********************************************************************************
+************
+
+TYPE:         High cardinality feature detection
+STATUS:       PASSED
+DESCRIPTION:  Your inputs were analyzed, and no high cardinality features were
+detected.
+              Learn more about high cardinality feature handling:
+https://aka.ms/AutomatedMLFeaturization
+
+********************************************************************************
+************
+Current status: ModelSelection. Beginning model selection.
+
+********************************************************************************
+************
+ITER: The iteration being evaluated.
+PIPELINE: A summary description of the pipeline being evaluated.
+DURATION: Time taken for the current iteration.
+METRIC: The result of computing score on the fitted pipeline.
+BEST: The best observed score thus far.
+********************************************************************************
+************
+
+ ITER   PIPELINE                                       DURATION
+METRIC      BEST
+    0   MaxAbsScaler LightGBM                          0:00:32
+0.9151    0.9151
+    1   MaxAbsScaler XGBoostClassifier                 0:00:44
+0.9128    0.9151
+    2   MaxAbsScaler ExtremeRandomTrees                0:00:35
+0.7304    0.9151
+    3   SparseNormalizer XGBoostClassifier             0:00:39
+0.9149    0.9151
+    4   MaxAbsScaler LightGBM                          0:00:33
+0.9139    0.9151
+    5   MaxAbsScaler LightGBM                          0:00:29
+0.8885    0.9151
+    6   StandardScalerWrapper XGBoostClassifier        0:00:35
+0.9106    0.9151
+    7   MaxAbsScaler LogisticRegression                0:00:34
+0.9082    0.9151
+    8   StandardScalerWrapper ExtremeRandomTrees       0:00:32
+0.8883    0.9151
+    9   StandardScalerWrapper XGBoostClassifier        0:00:30
+0.9142    0.9151
+   10   SparseNormalizer LightGBM                      0:00:30
+0.9054    0.9151
+   11   StandardScalerWrapper XGBoostClassifier        0:00:31
+0.9128    0.9151
+   12   MaxAbsScaler LogisticRegression                0:00:34
+0.9083    0.9151
+   13   MaxAbsScaler SGD                               0:00:27
+0.8772    0.9151
+   14   StandardScalerWrapper XGBoostClassifier        0:00:32
+0.9131    0.9151
+   15   SparseNormalizer RandomForest                  0:00:55
+0.8161    0.9151
+   16   StandardScalerWrapper LogisticRegression       0:00:30
+0.9081    0.9151
+   17   StandardScalerWrapper RandomForest             0:00:37
+0.9006    0.9151
+   18   StandardScalerWrapper XGBoostClassifier        0:00:34
+0.9142    0.9151
+   19   TruncatedSVDWrapper RandomForest               0:03:10
+0.8214    0.9151
+   20   TruncatedSVDWrapper RandomForest               0:04:45
+0.8307    0.9151
+   21   StandardScalerWrapper XGBoostClassifier        0:00:32
+0.9152    0.9152
+   22   StandardScalerWrapper LightGBM                 0:00:38
+0.9150    0.9152
+   23   StandardScalerWrapper XGBoostClassifier        0:03:25
+0.9095    0.9152
+   24   VotingEnsemble                                 0:00:37
+0.9175    0.9175
+   25   StackEnsemble                                  0:00:48
+0.9157    0.9175
+Stopping criteria reached at iteration 26. Ending experiment.
+********************************************************************************
+************
+Current status: BestRunExplainModel. Best run model explanations started
+Current status: ModelExplanationDataSetSetup. Model explanations data setup
+completed
+Current status: PickSurrogateModel. Choosing LightGBM as the surrogate model for
+explanations
+Current status: EngineeredFeatureExplanations. Computation of engineered
+features started
+Current status: EngineeredFeatureExplanations. Computation of engineered
+features completed
+Current status: RawFeaturesExplanations. Computation of raw features started
+Current status: RawFeaturesExplanations. Computation of raw features completed
+Current status: BestRunExplainModel. Best run model explanations completed
+********************************************************************************
+************
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+2022-11-13:01:07:53,907 INFO     [explanation\_client.py:334] Using default
+datastore for uploads
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Retrieve and save your best automl model.}
+
+\PY{c+c1}{\PYZsh{}\PYZsh{}\PYZsh{} YOUR CODE HERE \PYZsh{}\PYZsh{}\PYZsh{}}
+\PY{n}{best\PYZus{}run}\PY{p}{,} \PY{n}{model} \PY{o}{=} \PY{n}{auto\PYZus{}run}\PY{o}{.}\PY{n}{get\PYZus{}output}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{best-automl-model}{%
+\paragraph{Best AutoML model}\label{best-automl-model}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{best\PYZus{}run}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Run(Experiment: udacity-project,
+Id: AutoML\_811a3b43-3b3a-42fa-968f-9f149bdfc3e7\_24,
+Type: None,
+Status: Completed)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{best\PYZus{}run}\PY{o}{.}\PY{n}{get\PYZus{}metrics}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\{'AUC\_weighted': 0.9486404038690784,
+ 'accuracy': 0.9175113808801214,
+ 'weighted\_accuracy': 0.9522431149535047,
+ 'precision\_score\_weighted': 0.9151503219359782,
+ 'f1\_score\_weighted': 0.9162248294343114,
+ 'matthews\_correlation': 0.5730099912325297,
+ 'norm\_macro\_recall': 0.5553042062376359,
+ 'average\_precision\_score\_macro': 0.8282639970865023,
+ 'f1\_score\_micro': 0.9175113808801214,
+ 'average\_precision\_score\_weighted': 0.9562898481958152,
+ 'log\_loss': 0.2429208896782955,
+ 'AUC\_micro': 0.9809360759508244,
+ 'recall\_score\_macro': 0.7776521031188179,
+ 'recall\_score\_micro': 0.9175113808801214,
+ 'average\_precision\_score\_micro': 0.9816588300589812,
+ 'f1\_score\_macro': 0.786238561585573,
+ 'balanced\_accuracy': 0.7776521031188179,
+ 'precision\_score\_macro': 0.7956446063088369,
+ 'AUC\_macro': 0.9486404038690784,
+ 'precision\_score\_micro': 0.9175113808801214,
+ 'recall\_score\_weighted': 0.9175113808801214,
+ 'confusion\_matrix': 'aml://artifactId/ExperimentRun/dcid.AutoML\_811a3b43-3b3a-4
+2fa-968f-9f149bdfc3e7\_24/confusion\_matrix',
+ 'accuracy\_table': 'aml://artifactId/ExperimentRun/dcid.AutoML\_811a3b43-3b3a-42f
+a-968f-9f149bdfc3e7\_24/accuracy\_table'\}
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{52}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{best\PYZus{}run}\PY{o}{.}\PY{n}{register\PYZus{}model}\PY{p}{(}\PY{n}{model\PYZus{}name}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{automl\PYZus{}model}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{model\PYZus{}path}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{52}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+Model(workspace=Workspace.create(name='quick-starts-ws-215159',
+subscription\_id='6971f5ac-8af1-446e-8034-05acea24681f', resource\_group='aml-
+quickstarts-215159'), name=automl\_model, id=automl\_model:1, version=1, tags=\{\},
+properties=\{\})
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{joblib}\PY{o}{.}\PY{n}{dump}\PY{p}{(}\PY{n}{model}\PY{p}{,} \PY{n}{filename} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{best\PYZus{}automl\PYZus{}model.sav}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+['best\_automl\_model.sav']
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{55}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{model}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{55}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+PipelineWithYTransformations(Pipeline=\{'memory': None,
+                                       'steps': [('datatransformer',
+DataTransformer(enable\_dnn=False, enable\_feature\_sweeping=True,
+feature\_sweeping\_config=\{\}, feature\_sweeping\_timeout=86400,
+featurization\_config=None, force\_text\_dnn=False, is\_cross\_validation=True,
+is\_onnx\_compatible=False, observer=None, task='classification',
+working\_dir='/mn{\ldots}
+PreFittedSoftVotingClassifier(classification\_labels=array([0, 1]),
+estimators=[('21', Pipeline(memory=None, steps=[('standardscalerwrapper',
+StandardScalerWrapper(copy=True, with\_mean=False, with\_std=False)),
+('xgboostclassifier', XGBoostClassifier(booster='gbtree', colsample\_bytree=0.5,
+eta=0.2, gamma=0, max\_depth=7, max\_leaves=7, n\_estimators=25, n\_jobs=1,
+objective='reg:logistic',
+problem\_info=ProblemInfo(gpu\_training\_param\_dict=\{'processing\_unit\_type':
+'cpu'\}), random\_state=0, reg\_alpha=0, reg\_lambda=0.20833333333333334,
+subsample=1, tree\_method='auto'))], verbose=False)), ('0', Pipeline(memory=None,
+steps=[('maxabsscaler', MaxAbsScaler(copy=True)), ('lightgbmclassifier',
+LightGBMClassifier(min\_data\_in\_leaf=20, n\_jobs=1,
+problem\_info=ProblemInfo(gpu\_training\_param\_dict=\{'processing\_unit\_type':
+'cpu'\}), random\_state=None))], verbose=False)), ('22', Pipeline(memory=None,
+steps=[('standardscalerwrapper', StandardScalerWrapper(copy=True,
+with\_mean=False, with\_std=True)), ('lightgbmclassifier',
+LightGBMClassifier(boosting\_type='gbdt', colsample\_bytree=0.4955555555555555,
+learning\_rate=0.05789894736842106, max\_bin=210, max\_depth=5, min\_child\_weight=0,
+min\_data\_in\_leaf=0.07931241379310346, min\_split\_gain=0.3684210526315789,
+n\_estimators=600, n\_jobs=1, num\_leaves=137,
+problem\_info=ProblemInfo(gpu\_training\_param\_dict=\{'processing\_unit\_type':
+'cpu'\}), random\_state=None, reg\_alpha=0.5789473684210527,
+reg\_lambda=0.42105263157894735, subsample=0.05))], verbose=False)), ('3',
+Pipeline(memory=None, steps=[('sparsenormalizer', Normalizer(copy=True,
+norm='l2')), ('xgboostclassifier', XGBoostClassifier(booster='gbtree',
+colsample\_bytree=0.7, eta=0.01, gamma=0.01, max\_depth=7, max\_leaves=31,
+n\_estimators=10, n\_jobs=1, objective='reg:logistic',
+problem\_info=ProblemInfo(gpu\_training\_param\_dict=\{'processing\_unit\_type':
+'cpu'\}), random\_state=0, reg\_alpha=2.1875, reg\_lambda=1.0416666666666667,
+subsample=1, tree\_method='auto'))], verbose=False)), ('18',
+Pipeline(memory=None, steps=[('standardscalerwrapper',
+StandardScalerWrapper(copy=True, with\_mean=False, with\_std=False)),
+('xgboostclassifier', XGBoostClassifier(booster='gbtree', colsample\_bytree=0.7,
+eta=0.1, gamma=0.1, max\_depth=9, max\_leaves=511, n\_estimators=25, n\_jobs=1,
+objective='reg:logistic',
+problem\_info=ProblemInfo(gpu\_training\_param\_dict=\{'processing\_unit\_type':
+'cpu'\}), random\_state=0, reg\_alpha=0, reg\_lambda=1.7708333333333335,
+subsample=0.9, tree\_method='auto'))], verbose=False)), ('13',
+Pipeline(memory=None, steps=[('maxabsscaler', MaxAbsScaler(copy=True)),
+('sgdclassifierwrapper', SGDClassifierWrapper(alpha=7.5510448979591835,
+class\_weight='balanced', eta0=0.001, fit\_intercept=True,
+l1\_ratio=0.42857142857142855, learning\_rate='constant', loss='modified\_huber',
+max\_iter=1000, n\_jobs=1, penalty='none', power\_t=0.7777777777777777,
+random\_state=None, tol=0.0001))], verbose=False))], flatten\_transform=None,
+weights=[0.16666666666666666, 0.16666666666666666, 0.16666666666666666,
+0.16666666666666666, 0.16666666666666666, 0.16666666666666666]))],
+                                       'verbose': False\},
+                             y\_transformer=\{\},
+                             y\_transformer\_name='LabelEncoder')
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{cluster-clean-up}{%
+\paragraph{Cluster clean up}\label{cluster-clean-up}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{56}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{compute\PYZus{}target}\PY{o}{.}\PY{n}{delete}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Current provisioning state of AmlCompute is "Deleting"
+
+Current provisioning state of AmlCompute is "Deleting"
+
+    \end{Verbatim}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
